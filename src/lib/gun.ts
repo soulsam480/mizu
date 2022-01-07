@@ -5,7 +5,7 @@ import 'gun/lib/radisk';
 import 'gun/lib/store';
 import 'gun/lib/rindexed';
 import 'gun/nts';
-// import "gun/lib/webrtc";
+import 'gun/sea';
 
 export const peers = [import.meta.env.VITE_GUN];
 
@@ -16,9 +16,6 @@ export const gun = Gun({
   peers,
   localStorage: false,
 });
-
-/** Secondary Gun instance for key management */
-export const gun2 = Gun({ peers, localStorage: false });
 
 /**
  * SEA library
