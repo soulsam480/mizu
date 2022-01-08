@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 import { useRelay } from '@/lib/relay';
 import { useAuth, useProfile } from '@/lib/user';
+import { useSettings } from '@/stores/settings';
 
 const data = useRelay();
 
@@ -40,6 +41,8 @@ function add() {
     value: '',
   };
 }
+
+const store = useSettings();
 </script>
 <template>
   <div>Relay data</div>
@@ -64,5 +67,7 @@ function add() {
   <input v-model="newProfile.value" />
 
   <button @click="add">add</button>
+
+  <pre>{{ store.settings.value }}</pre>
 </template>
 <style lang="scss" scoped></style>

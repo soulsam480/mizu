@@ -1,6 +1,6 @@
+import { useSettings } from '@/stores/settings';
 import { reactive } from 'vue';
 import { gun } from './gun';
-import { store } from './localStorage';
 
 // Gun User
 export const user = gun.user().recall({ sessionStorage: true });
@@ -14,30 +14,31 @@ interface GunIs {
 export interface UserState {
   is: null | GunIs;
   profile: Record<string, any>;
-  interval: NodeJS.Timer | null;
+  initiated: boolean;
 }
 
 export const userState = reactive<UserState>({
   is: null,
   profile: {},
-  interval: store('pulse').get(),
+  initiated: false,
 });
 
 user.get('alias').on(init);
 
 function init() {
+  if (userState.initiated) return;
+
+  const settingsStore = useSettings();
+
   userState.is = (user as any).is;
 
-  userState.interval && clearInterval(userState.interval);
+  settingsStore.key('interval').value && clearInterval(settingsStore.key('interval').value);
 
-  userState.interval = setInterval(() => {
-    gun
-      .user()
-      .get('pulse')
-      .put(Date.now() as any);
+  const interval = setInterval(() => {
+    user.get('pulse').put(Date.now() as any);
   }, 1000);
 
-  store('pulse').set(userState.interval);
+  settingsStore.set('interval', interval);
 
   user.get('pulse').on((d) => {
     console.log(d);
@@ -49,6 +50,14 @@ function init() {
     .on((data, key) => {
       userState.profile[key] = data;
     });
+
+  settingsStore.$subscribe((_, state) => {
+    for (const [key, value] of Object.entries(state.userSettings)) {
+      user.get('settings').get(key).put(value);
+    }
+  });
+
+  userState.initiated = true;
 }
 
 //@ts-ignore

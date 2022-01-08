@@ -3,12 +3,15 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "vite",
+    "dev:app": "vite",
+    "dev:api": "node relay/start.mjs",
+    "dev": "pnpm dlx concurrently --kill-others-on-fail \"npm run dev:app\"  \"npm run dev:api\"",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@vueuse/core": "^7.5.3",
     "express": "^4.17.2",
     "gun": "^0.2020.1235",
     "pinia": "^2.0.9",
