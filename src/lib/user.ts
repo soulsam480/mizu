@@ -64,6 +64,8 @@ function init() {
 gun.on('auth', init);
 
 export function useAuth() {
+  const settingsStore = useSettings();
+
   function login(username: string, password: string) {
     return new Promise((resolve, reject) => {
       user.auth(username, password, (dat) => {
@@ -86,6 +88,11 @@ export function useAuth() {
 
   function logOut() {
     user.leave();
+
+    settingsStore.key('interval').value && clearInterval(settingsStore.key('interval').value);
+    userState.is = null;
+    userState.profile = {};
+    userState.initiated = false;
   }
 
   return { login, signUp, logOut };

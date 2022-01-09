@@ -1,18 +1,19 @@
-import { ComponentPublicInstance } from 'vue';
+import { ComponentPublicInstance, RenderFunction } from 'vue';
 
-type Ant = typeof import('ant-design-vue');
+type Headless = typeof import('@headlessui/vue');
 
 type Component = {
   new (...args: any[]): ComponentPublicInstance;
 };
 
-type AntComponentNames = keyof {
-  [K in keyof Ant as Ant[K] extends Component ? K : never]: any;
+type HeadlessComponentNames = keyof {
+  [K in keyof Headless as Headless[K] extends Component ? K : never]: any;
 };
-type AntComponents = Pick<Ant, AntComponentNames>;
+
+type HeadlessComponents = Pick<Headless, HeadlessComponentNames>;
 
 declare module '@vue/runtime-core' {
-  export interface GlobalComponents extends AntComponents {}
+  export interface GlobalComponents extends HeadlessComponents {}
 }
 
 export {};

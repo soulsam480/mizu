@@ -48,13 +48,6 @@ const store = useSettings();
   <div>Relay data</div>
   <pre> {{ data }} </pre>
 
-  <input v-model="user.username" />
-
-  <input v-model="user.password" />
-
-  <button @click="loginUser">Sign up</button>
-  <button @click="loginUser(false)">Login</button>
-
   <pre
     >{{ userState }}
 
