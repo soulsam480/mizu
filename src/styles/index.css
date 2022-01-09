@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn,
-.alert,
-.input {
-  @apply rounded-md;
+:root {
+  --rounded-box: 6px; /* border-radius for cards and other big elements */
+  --rounded-btn: 6px; /* border-radius for buttons and similar elements */
+  --rounded-badge: 6px;
 }

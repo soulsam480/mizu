@@ -52,15 +52,5 @@ const store = useSettings();
     >{{ userState }}
 
   </pre>
-
-  <div>add profile data</div>
-
-  <input v-model="newProfile.key" />
-
-  <input v-model="newProfile.value" />
-
-  <button @click="add">add</button>
-
-  <pre>{{ store.settings.value }}</pre>
 </template>
 <style lang="scss" scoped></style>

@@ -5,7 +5,13 @@ interface Thread {
   who: string;
   what: string;
   when: string;
-  replies: Thread[];
+  replies: Reply[];
+}
+
+interface Reply {
+  who: string;
+  what: string;
+  when: string;
 }
 
 export const threads = ref<Thread[]>([]);
