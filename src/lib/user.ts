@@ -71,6 +71,7 @@ export function useAuth() {
       user.auth(username, password, (dat) => {
         if ('err' in dat) return reject(dat.err);
 
+        userState.is = (user as any).is;
         resolve(dat);
       });
     });

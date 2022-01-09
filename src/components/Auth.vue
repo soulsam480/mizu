@@ -23,14 +23,16 @@ const { addProfileData } = useProfile();
 async function loginUser(register = true) {
   const { username, password } = user.value;
 
+  errorData.value = null;
+
   try {
     register ? await signUp(username, password) : await authLogin(username, password);
+
+    emits('done');
 
     if (register) {
       addProfileData('username', username);
     }
-
-    emits('done');
   } catch (error) {
     console.log(error);
     errorData.value = error as string;
@@ -80,12 +82,12 @@ async function loginUser(register = true) {
         <button
           type="submit"
           class="btn btn-accent btn-sm"
-          :disabled="Object.values(user).every((e) => !e)"
+          :disabled="Object.values(user).some((e) => !e)"
           v-if="login"
         >
           Login
         </button>
-        <button type="submit" class="btn btn-accent btn-sm" :disabled="Object.values(user).every((e) => !e)" v-else>
+        <button type="submit" class="btn btn-accent btn-sm" :disabled="Object.values(user).some((e) => !e)" v-else>
           Sign up
         </button>
       </div>
