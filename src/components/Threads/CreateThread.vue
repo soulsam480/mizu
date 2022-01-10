@@ -10,10 +10,13 @@ const { createThread } = useThreads();
     <label class="label">
       <span class="label-text">Start a thread</span>
     </label>
-    <textarea class="textarea h-24 textarea-bordered" placeholder="Thread" v-model="post"></textarea>
+
+    <textarea class="textarea h-17 textarea-bordered max-h-52" placeholder="Thread" v-model="post"></textarea>
 
     <div class="flex justify-end">
       <button type="submit" class="btn btn-accent btn-sm" :disabled="!post">Create</button>
     </div>
+
+    <div class="divider"></div>
   </form>
 </template>

@@ -2,14 +2,14 @@ import { ref } from 'vue';
 import { gun, SEA } from './gun';
 import { useProfile } from './user';
 
-interface Thread {
+export interface Thread {
   who: string;
   what: string;
   when: number;
   replies?: Reply[];
 }
 
-interface Reply {
+export interface Reply {
   who: string;
   what: string;
   when: number;
