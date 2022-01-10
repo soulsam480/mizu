@@ -1,5 +1,5 @@
 import { useSettings } from '@/stores/settings';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { gun } from './gun';
 
 // Gun User
@@ -107,5 +107,5 @@ export function useProfile() {
       .put(value as any);
   }
 
-  return { userState, addProfileData };
+  return { userState, addProfileData, useerIs: computed(() => userState.is) };
 }

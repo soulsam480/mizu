@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuth, useProfile } from '@/lib/user';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 defineProps<{
   login: boolean;
@@ -38,6 +38,14 @@ async function loginUser(register = true) {
     errorData.value = error as string;
   }
 }
+const isFormValid = computed(() => {
+  const { password, username } = user.value;
+
+  if (!username || !password) return false;
+  if (password.trim().length < 15) return false;
+
+  return true;
+});
 </script>
 <template>
   <div class="flex flex-col space-y-2">
@@ -77,19 +85,13 @@ async function loginUser(register = true) {
         class="input input-sm input-bordered input-primary"
         v-model="user.password"
       />
+      <label class="label" v-if="!login">
+        <span class="label-text-alt">Password needs to be more than 15 character</span>
+      </label>
 
       <div class="flex justify-end mt-3">
-        <button
-          type="submit"
-          class="btn btn-accent btn-sm"
-          :disabled="Object.values(user).some((e) => !e)"
-          v-if="login"
-        >
-          Login
-        </button>
-        <button type="submit" class="btn btn-accent btn-sm" :disabled="Object.values(user).some((e) => !e)" v-else>
-          Sign up
-        </button>
+        <button type="submit" class="btn btn-accent btn-sm" :disabled="!isFormValid" v-if="login">Login</button>
+        <button type="submit" class="btn btn-accent btn-sm" :disabled="!isFormValid" v-else>Sign up</button>
       </div>
     </form>
   </div>

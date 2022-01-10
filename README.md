@@ -2,6 +2,10 @@
 
 trying to setup an decentralised anonymous forum
 
+### Goals
+- Decentralised
+- Uncensored
+- Fast (should be, dunno...)
 
 ### Stack
 
