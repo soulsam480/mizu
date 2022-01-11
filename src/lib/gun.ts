@@ -6,6 +6,7 @@ import 'gun/lib/store';
 import 'gun/lib/rindexed';
 import 'gun/nts';
 import 'gun/sea';
+import 'gun/lib/unset';
 
 export const peers = [import.meta.env.VITE_GUN];
 

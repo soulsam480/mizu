@@ -18,6 +18,7 @@ specifiers:
   typescript: ~4.5.4
   unplugin-icons: ^0.13.0
   unplugin-vue-components: ^0.17.11
+  uuid: ^8.3.2
   vite: ^2.7.7
   vue: ^3.2.26
   vue-router: ^4.0.12
@@ -31,6 +32,7 @@ dependencies:
   express: 4.17.2
   gun: 0.2020.1235
   pinia: 2.0.9_typescript@4.5.4+vue@3.2.26
+  uuid: 8.3.2
   vue: 3.2.26
   vue-router: 4.0.12_vue@3.2.26
   zenbase: 2.1.6
@@ -2276,6 +2278,11 @@ packages:
   /utils-merge/1.0.1:
     resolution: {integrity: sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=}
     engines: {node: '>= 0.4.0'}
+    dev: false
+
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /vary/1.1.2:

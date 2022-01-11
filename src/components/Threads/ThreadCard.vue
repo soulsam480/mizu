@@ -1,19 +1,18 @@
 <script setup lang="ts">
-// import { ref } from 'vue';
-
 import { globalKey } from '@/lib/events';
 import { getAvatar } from '@/lib/helpers';
-import { Thread } from '@/lib/threads';
+import { Thread, useThreads } from '@/lib/threads';
 import { useProfile } from '@/lib/user';
 import { useEventBus } from '@vueuse/core';
 
-defineProps<{
+const props = defineProps<{
   thread: Thread;
 }>();
 
 const { emit } = useEventBus(globalKey);
 
 const { useerIs } = useProfile();
+const { getThread, getThreadVotes, voteThread } = useThreads();
 
 const authuser = () =>
   emit({
@@ -23,8 +22,17 @@ const authuser = () =>
     },
   });
 
-function handleCardOp(type: 'comment' | 'up_vote' | 'share') {
+async function handleCardOp(type: 'comment' | 'up_vote' | 'share') {
   if (!useerIs.value) return authuser();
+
+  const threadId = props.thread['_']['#'];
+
+  if (type === 'up_vote') {
+    await voteThread(threadId);
+    getThreadVotes(threadId);
+  }
+
+  // console.log(await getThread(props.thread['_']['#']));
 }
 </script>
 <template>
