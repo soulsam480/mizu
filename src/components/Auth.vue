@@ -8,6 +8,7 @@ defineProps<{
 
 const emits = defineEmits<{
   (e: 'done'): void;
+  (e: 'changeOp'): void;
 }>();
 
 const user = ref({
@@ -53,8 +54,12 @@ const isFormValid = computed(() => {
 
     <div class="alert alert-error p-2" v-if="!login">
       <div class="flex flex-col space-y-1">
-        <div>Note</div>
-        <div class="text-xs">Mizu is an uncensored platform and may have NSFW content</div>
+        <div class="flex space-x-2 items-center">
+          <i-la-info />
+          Note
+        </div>
+        <div class="text-xs">It's a decentralised platform, so all your data is secure by default.</div>
+        <div class="text-xs">Mizu is an uncensored platform and may have NSFW content.</div>
       </div>
     </div>
 
@@ -89,7 +94,13 @@ const isFormValid = computed(() => {
         <span class="label-text-alt">Password needs to be more than 15 character</span>
       </label>
 
-      <div class="flex justify-end mt-3">
+      <div class="flex justify-between items-center mt-3">
+        <div>
+          <button type="button" class="btn btn-xs normal-case text-xs font-normal btn-ghost" @click="$emit('changeOp')">
+            {{ login ? "Don't have an account ? Sign up" : 'Already have an account ? Login' }}
+          </button>
+        </div>
+
         <button type="submit" class="btn btn-accent btn-sm" :disabled="!isFormValid" v-if="login">Login</button>
         <button type="submit" class="btn btn-accent btn-sm" :disabled="!isFormValid" v-else>Sign up</button>
       </div>

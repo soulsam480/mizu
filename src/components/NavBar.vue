@@ -3,6 +3,8 @@ import MDialog from './MDialog.vue';
 import { ref } from 'vue';
 import Auth from './Auth.vue';
 import { useAuth, useProfile } from '@/lib/user';
+import { useEventBus } from '@vueuse/core';
+import { globalKey } from '@/lib/events';
 
 const isDialog = ref(false);
 const authMode = ref<'login' | 'signup'>('login');
@@ -15,11 +17,23 @@ function openDialog(type: typeof authMode.value) {
 const { logOut } = useAuth();
 
 const { userState } = useProfile();
+
+const { on } = useEventBus(globalKey);
+
+on(({ op }) => {
+  if (op.type === 'auth') {
+    openDialog(op.meta);
+  }
+});
 </script>
 <template>
   <div class="navbar mb-2 shadow-lg bg-neutral min-h-6 text-neutral-content">
     <m-dialog v-model="isDialog">
-      <auth :login="authMode === 'login'" @done="isDialog = false" />
+      <auth
+        :login="authMode === 'login'"
+        @done="isDialog = false"
+        @change-op="openDialog(authMode !== 'login' ? 'login' : 'signup')"
+      />
     </m-dialog>
 
     <div class="flex-1 px-2 mx-2">

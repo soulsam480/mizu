@@ -107,5 +107,9 @@ export function useProfile() {
       .put(value as any);
   }
 
-  return { userState, addProfileData, useerIs: computed(() => userState.is) };
+  return {
+    userState,
+    addProfileData,
+    useerIs: computed(() => userState.is),
+  };
 }
