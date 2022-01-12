@@ -1,4 +1,4 @@
-import Gun from 'gun/gun';
+// import Gun from 'gun/gun';
 import { ref } from 'vue';
 import { gun } from './gun';
 import { useProfile, user } from './user';
@@ -10,7 +10,6 @@ export interface Thread {
   what: string;
   when: number;
   replies?: Reply[];
-  votes: number;
 }
 
 export interface Reply {
@@ -29,14 +28,14 @@ export interface GunMeta {
 
 export const threads = ref<Thread[]>([]);
 
-const match = {
-  // lexical queries are kind of like a limited RegEx or Glob.
-  '.': {
-    // property selector
-    '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(), // find any indexed property larger ~3 hours ago
-  },
-  '-': 1, // filter in reverse
-};
+// const match = {
+//   // lexical queries are kind of like a limited RegEx or Glob.
+//   '.': {
+//     // property selector
+//     '>': new Date(+new Date() - 1 * 1000 * 60 * 60 * 3).toISOString(), // find any indexed property larger ~3 hours ago
+//   },
+//   '-': 1, // filter in reverse
+// };
 
 export function useThreads() {
   const { useerIs, userState } = useProfile();
@@ -48,7 +47,6 @@ export function useThreads() {
       what: data,
       when: Date.now(),
       who: userState.profile.username,
-      votes: 0,
     };
 
     const id = new Date().toISOString();
@@ -58,14 +56,14 @@ export function useThreads() {
 
   async function isVoted(id: string) {
     const userPub = useerIs.value?.pub;
-    console.log(userPub);
 
     return new Promise<boolean>((resolve, _) => {
       gun
         .get(id)
-        .get('votes')
-        .map((v) => (v && v.pub === userPub ? v : undefined))
+        .get(`votes/${userPub}`)
         .once((vote) => {
+          console.log('vote', vote);
+
           if (vote) resolve(true);
 
           resolve(false);
@@ -73,56 +71,71 @@ export function useThreads() {
     });
   }
 
-  function getThreadVotes(id: string) {
+  function getThreadVotes(id: string, subscribe = false) {
+    const threadVotes = gun.get(id).get('votes');
+
+    if (subscribe) {
+      threadVotes.on((data) => {
+        console.log(data);
+      });
+    } else {
+      threadVotes.once((data) => {
+        console.log(data);
+      });
+    }
+  }
+
+  function fetchThreads() {
+    //TODO: make better queries
+    // .get(match)
     gun
-      .get(id)
-      .get('votes')
+      .get('threads')
       .map()
       .once((data) => {
-        console.log(data);
+        if (!data) return;
+
+        threads.value.push(data);
       });
   }
 
+  function getThread(id: string) {
+    return new Promise<Thread>((resolve, reject) => {
+      gun.get(id).once((data) => {
+        if (!data) reject();
+        resolve(data as Thread);
+      });
+    });
+  }
   return {
     createThread,
     threads,
     isVoted,
     getThreadVotes,
-    fetchThreads() {
-      gun
-        .get('threads')
-        //TODO: make better queries
-        // .get(match)
-        .map()
-        .once((data) => {
-          if (!data) return;
-          threads.value.push(data);
-        });
-    },
-    getThread(id: string) {
-      return new Promise<Thread>((resolve, reject) => {
-        gun.get(id).once((data) => {
-          if (!data) reject();
-          resolve(data as Thread);
-        });
-      });
-    },
+    fetchThreads,
+    getThread,
     async voteThread(id: string) {
       const thread = gun.get(id);
+      const userPub = useerIs.value?.pub;
+
+      const voted = await isVoted(id);
+
+      if (!voted) {
+        thread.get(`votes/${userPub}`).put(user);
+      } else {
+        thread.get(`votes/${userPub}`).put(null as any);
+      }
+    },
+    async deleteThread(id: string) {
+      console.log(id);
 
       try {
-        const voted = await isVoted(id);
+        const data = await getThread(id);
+        console.log(data);
 
-        console.log(voted);
+        gun.get(id).put(null);
 
-        if (!voted) {
-          thread.get('votes').set(user);
-        } else {
-          (thread.get('votes').unset as any)(user);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+        fetchThreads();
+      } catch (error) {}
     },
   };
 }
